@@ -18,6 +18,11 @@
 - `gui/LibraryGui`：分类/条目界面，holder 区分菜单类型
 - `api/LiuItemLibraryApi`：对外静态 API，保持向后兼容（只加不删）
 
+## 对外扩展
+- 启动时把 `lib` 前缀注册进 LiuLib（`LiuLib.items().registerResolver("lib", …)`），停用时注销
+- 因此其他插件只要用 LiuLib `build/buildOrNull` 就能解析 `lib:<id>`；不要为每个插件单独写解析代码
+- 新增物品库能力时优先扩展 `LiuItemLibraryApi`，保持 `lib:` 前缀语义稳定
+
 ## 数据与兼容
 - `data` 列 = LiuLib ItemCodec 编码串，**不要**手写解析；编解码只经由 `ItemService`
 - 写入必须分配新的全局 `revision`（`DatabaseManager.nextRevision`），更新用乐观锁 `WHERE revision = ?`

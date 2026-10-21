@@ -7,6 +7,7 @@ import com.liuitemlib.db.DatabaseManager;
 import com.liuitemlib.gui.LibraryGui;
 import com.liuitemlib.item.ItemLibraryService;
 import com.liuxingyu.liulib.LiuLib;
+import com.liuxingyu.liulib.item.ItemResolver;
 import com.liuxingyu.liulib.item.ItemService;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
@@ -17,6 +18,7 @@ public final class LiuItemLibrary extends org.bukkit.plugin.java.JavaPlugin {
     private volatile ItemLibraryService service;
     private ItemService items;
     private BukkitTask syncTask;
+    private ItemResolver libResolver;
     private boolean ready;
 
     @Override
@@ -35,6 +37,7 @@ public final class LiuItemLibrary extends org.bukkit.plugin.java.JavaPlugin {
             getCommand("itemlib").setTabCompleter(command);
         }
         getServer().getPluginManager().registerEvents(new LibraryGui.Listener(this), this);
+        registerLibResolver();
         startSyncTask();
         ready = true;
         getLogger().info("启动完成 | DB: " + (config.db().isSqlite() ? config.db().sqliteFile : "mysql:" + config.db().database)
@@ -42,9 +45,27 @@ public final class LiuItemLibrary extends org.bukkit.plugin.java.JavaPlugin {
                 + " | 同步间隔: " + config.syncIntervalSeconds() + "s");
     }
 
+    /**
+     * 把物品库接入 LiuLib 的规格解析：注册 {@code lib} 前缀后，所有走 LiuLib
+     * {@code build/buildOrNull} 的插件都能直接写 {@code lib:gift:spring_2026}。
+     */
+    private void registerLibResolver() {
+        if (items == null) {
+            return;
+        }
+        libResolver = body -> {
+            ItemLibraryService svc = service;
+            return svc == null ? null : svc.build(body);
+        };
+        items.registerResolver("lib", libResolver);
+    }
+
     @Override
     public void onDisable() {
         ready = false;
+        if (items != null) {
+            items.unregisterResolver("lib");
+        }
         stopSyncTask();
         if (database != null) {
             database.close();

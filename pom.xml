@@ -6,7 +6,7 @@
 
   <groupId>com.liuitemlib</groupId>
   <artifactId>LiuItemLibrary</artifactId>
-  <version>0.1.0</version>
+  <version>0.1.1</version>
   <packaging>jar</packaging>
   <name>LiuItemLibrary</name>
   <description>物品库 - 自定义物品集中保存 / 跨服共享 / 统一发放</description>
@@ -15,7 +15,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.release>17</maven.compiler.release>
     <paper.version>1.21.11-R0.1-SNAPSHOT</paper.version>
-    <liulib.version>1.0.4</liulib.version>
+    <liulib.version>1.0.5</liulib.version>
   </properties>
 
   <build>

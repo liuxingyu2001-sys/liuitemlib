@@ -6,7 +6,7 @@
 ## 前置
 
 - Paper / Leaf 1.21+
-- **LiuLib 1.0.4+**（硬依赖，`depend: [LiuLib]`）
+- **LiuLib 1.0.5+**（硬依赖，`depend: [LiuLib]`；1.0.5 起提供自定义前缀解析器扩展点）
 - 跨服共享用 MySQL（MariaDB 8+/10+ 均可）；单服调试可用 SQLite
 - 各服必须使用**相同版本的 LiuLib**（物品编码格式一致）和**同一套 CraftEngine 物品定义**，否则本服反序列化会失败
 
@@ -82,7 +82,21 @@ LiuItemLibraryApi.save(heldItem, "shop:vip_card", "vip", "VIP 卡", "console", t
 List<LibraryItem> items = LiuItemLibraryApi.search("春");
 ```
 
-商店等插件后续可通过 `ItemProvider` 前缀 `lib` 直接引用：`item: "lib:gift:spring_2026"`（v2 计划）。
+### 物品库 ID 直接写进其他插件配置
+
+liuitemlib 启动时会把 `lib` 前缀注册进 LiuLib 的规格解析器，因此**所有通过 LiuLib
+`build/buildOrNull` 解析物品的插件**都能直接写：
+
+```yaml
+item: "lib:gift:spring_2026"        # 单个
+item: "lib:gift:spring_2026*3"      # 带数量
+```
+
+已接入的商店：liushop / liupointshop 的 `item:` 键可直接写 `lib:<物品库ID>`，
+物品内容由物品库动态提供——改物品库条目，全服商店立刻生效。
+
+> 其它插件要生效，需满足：它走 LiuLib 解析物品，且 `plugin.yml` 的 `softdepend` 里包含
+> `liuitemlib`（保证物品库先启用）；物品库条目不存在时构建失败，按各插件自身的失败策略处理。
 
 ## 数据表
 

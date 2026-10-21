@@ -1,0 +1,41 @@
+name: liuitemlib
+version: ${project.version}
+main: com.liuitemlib.LiuItemLibrary
+api-version: 1.21
+folia-supported: true
+authors: [liuxingyu2001]
+description: 物品库 - 自定义物品集中保存 / 跨服共享（MySQL）/ 统一发放
+libraries:
+  - com.zaxxer:HikariCP:5.1.0
+  - com.mysql:mysql-connector-j:8.0.33
+  - org.xerial:sqlite-jdbc:3.49.1.0
+depend: [LiuLib]
+commands:
+  itemlib:
+    description: 物品库（保存/发放/列表/搜索/GUI/同步）
+    usage: /itemlib <save|give|list|search|info|delete|restore|gui|sync|reload>
+    aliases: [il, liuitemlib]
+permissions:
+  liuitemlib.use:
+    description: 物品库查询与 GUI
+    default: true
+  liuitemlib.give:
+    description: 给自己发放物品库物品
+    default: op
+  liuitemlib.admin:
+    description: 物品库管理总权限
+    default: op
+    children:
+      liuitemlib.admin.save: true
+      liuitemlib.admin.delete: true
+      liuitemlib.admin.reload: true
+      liuitemlib.admin.import: true
+  liuitemlib.admin.save:
+    description: 保存/覆盖物品库物品
+    default: op
+  liuitemlib.admin.delete:
+    description: 删除/恢复物品库物品
+    default: op
+  liuitemlib.admin.reload:
+    description: 重载配置与同步
+    default: op

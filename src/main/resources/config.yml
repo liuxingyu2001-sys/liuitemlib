@@ -1,0 +1,32 @@
+# ============================================================
+# LiuItemLibrary 物品库
+#   自定义物品集中保存，MySQL 跨服共享；ItemCodec 完整序列化
+# ============================================================
+
+db:
+  # sqlite = 单服调试；mysql = 跨服共享（推荐）
+  type: sqlite
+  host: 127.0.0.1
+  port: 3306
+  database: liuitemlib
+  user: root
+  password: ""
+  params: "useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true"
+  # sqlite 文件（相对服务器根目录或绝对路径）
+  sqlite-file: "plugins/liuitemlib/data.db"
+  # MySQL 表名前缀：{prefix}_items / {prefix}_meta
+  table-prefix: liuitemlib
+  pool-size: 5
+  connection-timeout-ms: 5000
+  auto-create-database: true
+  auto-create-tables: true
+
+settings:
+  # 跨服同步轮询间隔（秒）；写入方立即生效，其他服最迟间隔后可见
+  sync-interval-seconds: 5
+  # 单个物品编码长度上限（ItemCodec 默认 60000，超过直接拒绝保存）
+  max-encoded-length: 60000
+  # 未指定分类时的默认分类
+  default-category: default
+  # 单次 /itemlib give 数量上限
+  max-give: 2304
